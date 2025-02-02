@@ -11,7 +11,7 @@ namespace Teste_API.Services
         {
             _configuration = configuration;
         }
-        public async Task<List<Cadastro>> ListarCadastro()
+        public async Task<List<ResponseCadastro>> ListarCadastro()
         {
             // Definindo a consulta SQL para buscar todos os registros
             string query = "SELECT * FROM Cadastro";  // Substitua 'Cadastro' pelo nome correto da sua tabela
@@ -23,7 +23,7 @@ namespace Teste_API.Services
                 await conn.OpenAsync();
 
                 // Usando Dapper para fazer a consulta e mapear os dados para uma lista
-                var listCadastro = (await conn.QueryAsync<Cadastro>(query)).ToList();
+                var listCadastro = (await conn.QueryAsync<ResponseCadastro>(query)).ToList();
 
                 // Retornando a lista de cadastros
                 return listCadastro;

@@ -7,6 +7,6 @@ namespace Teste_API.Services
         Task<bool> AtualizarCadastro(Cadastro cadastro, int id);
         Task<bool> CriarCadastro(Cadastro cadastro);
         Task<bool> ExcluirCadastro(int id);
-        Task<List<Cadastro>> ListarCadastro();
+        Task<List<ResponseCadastro>> ListarCadastro();
     }
 }
