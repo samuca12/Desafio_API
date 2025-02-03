@@ -21,6 +21,18 @@ namespace Teste_API.Controllers
             var Cadastro = await _cadastro.ListarCadastro();
             return Ok(Cadastro);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> BuscaCadastro(int id)
+        {
+            var usuario = await _cadastro.BuscaCadastro(id);
+
+            if (usuario == null)
+            {
+                return NotFound();  
+            }
+
+            return Ok(usuario); 
+        }
         [HttpPost]
         public async Task<IActionResult> CriarCadastro([FromBody] Cadastro cadastro)
         {
@@ -36,10 +48,9 @@ namespace Teste_API.Controllers
                 return StatusCode(500, "Ocorreu um erro ao criar o cadastro.");
             }
 
-            return CreatedAtAction(nameof(ListarUsuario), cadastro);  // Retorna 201 com o cadastro criado
+            return CreatedAtAction(nameof(ListarUsuario), cadastro);  
         }
 
-        // 3. Atualizar Cadastro (PUT)
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarCadastro(int id, [FromBody] Cadastro cadastro)
         {
@@ -55,10 +66,9 @@ namespace Teste_API.Controllers
                 return NotFound("Cadastro não encontrado.");
             }
 
-            return NoContent();  // Retorna 204 quando a atualização for bem-sucedida
+            return NoContent();
         }
 
-        // 4. Excluir Cadastro (DELETE)
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirCadastro(int id)
         {
@@ -69,7 +79,7 @@ namespace Teste_API.Controllers
                 return NotFound("Cadastro não encontrado.");
             }
 
-            return NoContent();  // Retorna 204 quando a exclusão for bem-sucedida
+            return NoContent();
         }
     }
 }

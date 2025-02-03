@@ -8,5 +8,6 @@ namespace Teste_API.Services
         Task<bool> CriarCadastro(Cadastro cadastro);
         Task<bool> ExcluirCadastro(int id);
         Task<List<ResponseCadastro>> ListarCadastro();
+        Task<Cadastro> BuscaCadastro (int id);
     }
 }

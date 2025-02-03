@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using System.Text;
 using Dapper;
 using Teste_API.Models;
 
@@ -13,19 +14,30 @@ namespace Teste_API.Services
         }
         public async Task<List<ResponseCadastro>> ListarCadastro()
         {
-            // Definindo a consulta SQL para buscar todos os registros
-            string query = "SELECT * FROM Cadastro";  // Substitua 'Cadastro' pelo nome correto da sua tabela
+            string query = "SELECT * FROM Cadastro";
 
-            // Usando Dapper para executar a consulta e mapear para uma lista de objetos Cadastro
             using (var conn = new SqlConnection(_configuration.GetConnectionString("banco")))
             {
-                // Abrindo a conexão
                 await conn.OpenAsync();
-
-                // Usando Dapper para fazer a consulta e mapear os dados para uma lista
+             
                 var listCadastro = (await conn.QueryAsync<ResponseCadastro>(query)).ToList();
 
-                // Retornando a lista de cadastros
+                return listCadastro;
+            }
+        }
+        public async Task<Cadastro> BuscaCadastro(int Id)
+        {
+          
+            string query = $"SELECT * FROM Cadastro WHERE Id = {Id}";
+
+
+            using (var conn = new SqlConnection(_configuration.GetConnectionString("banco")))
+            {
+               
+                await conn.OpenAsync();
+
+                var listCadastro = (await conn.QueryAsync<Cadastro>(query)).ToList().FirstOrDefault();
+
                 return listCadastro;
             }
         }
@@ -37,28 +49,50 @@ namespace Teste_API.Services
             {
                 await conn.OpenAsync();
 
-                // A inserção usa o comando SQL com parâmetros para evitar SQL Injection
+                
                 var result = await conn.ExecuteAsync(query, new
-                {
-                    Id = Guid.NewGuid(),  // Gerando um novo GUID para o 'Id'
+                {     
                     Nome = cadastro.Nome,
                     SobreNome = cadastro.SobreNome,
                     Telefone = cadastro.Telefone
                 });
 
-                return result > 0;  // Se o número de linhas afetadas for maior que 0, a inserção foi bem-sucedida
+                return result > 0; 
             }
         }
         public async Task<bool> AtualizarCadastro(Cadastro cadastro, int id)
         {
             string query = "UPDATE Cadastro SET Nome = @Nome, SobreNome = @SobreNome, Telefone = @Telefone WHERE Id = @Id";
+            StringBuilder s = new StringBuilder();
+            s.Append("UPDATE Cadastro SET ");
+            if (!String.IsNullOrEmpty(cadastro.Nome))
+            {
+                s.Append("Nome = @Nome ");
+            }
+            if (!String.IsNullOrEmpty(cadastro.SobreNome) && !string.IsNullOrEmpty(cadastro.Nome))
+            {
+                s.Append(",SobreNome = @SobreNome, ");
+            }
+            else if (!string.IsNullOrEmpty(cadastro.SobreNome))
+            {
+                s.Append("SobreNome = @SobreNome ");
+            }
+            if (!String.IsNullOrEmpty(cadastro.Telefone) && !string.IsNullOrEmpty(cadastro.SobreNome))
+            {
+                s.Append(",Telefone = @Telefone ");
+            }
+            else if (!string.IsNullOrEmpty(cadastro.Telefone))
+            {
+                s.Append("Telefone = @Telefone ");
+            }
+            s.Append("WHERE Id = @Id ");
+
 
             using (var conn = new SqlConnection(_configuration.GetConnectionString("banco")))
             {
                 await conn.OpenAsync();
 
-                // Atualizando o registro com base no ID
-                var result = await conn.ExecuteAsync(query, new
+                var result = await conn.ExecuteAsync(s.ToString(), new
                 {
                     Nome = cadastro.Nome,
                     SobreNome = cadastro.SobreNome,
@@ -66,7 +100,7 @@ namespace Teste_API.Services
                     Id = id
                 });
 
-                return result > 0;  // Se o número de linhas afetadas for maior que 0, a atualização foi bem-sucedida
+                return result > 0; 
             }
         }
         public async Task<bool> ExcluirCadastro(int id)
@@ -77,10 +111,9 @@ namespace Teste_API.Services
             {
                 await conn.OpenAsync();
 
-                // Excluindo o registro com base no ID
                 var result = await conn.ExecuteAsync(query, new { Id = id });
 
-                return result > 0;  // Se o número de linhas afetadas for maior que 0, a exclusão foi bem-sucedida
+                return result > 0; 
             }
         }
 
