@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sua API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio Idealsoft", Version = "v1" });
 });
 
 builder.Services.AddScoped< ICadastro, CadastroService > ();
