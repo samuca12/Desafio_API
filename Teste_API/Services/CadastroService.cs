@@ -71,7 +71,7 @@ namespace Teste_API.Services
             }
             if (!String.IsNullOrEmpty(cadastro.SobreNome) && !string.IsNullOrEmpty(cadastro.Nome))
             {
-                s.Append(",SobreNome = @SobreNome, ");
+                s.Append(",SobreNome = @SobreNome ");
             }
             else if (!string.IsNullOrEmpty(cadastro.SobreNome))
             {
